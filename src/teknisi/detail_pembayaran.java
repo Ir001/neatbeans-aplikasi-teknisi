@@ -35,19 +35,24 @@ public class detail_pembayaran extends javax.swing.JFrame {
         String query = "SELECT * FROM orderan JOIN reparasi ON orderan.id_order = reparasi.id_order WHERE orderan.kode = ?";
         try{ //Eksepsi
             String layanan = null;
+            String barang = null;
+            int harga_barang = 0;
             int harga_layanan = 0;
             pst =  conn.prepareStatement(query); // Eksekusi Query
             pst.setString(1, kode); 
             rs = pst.executeQuery(); //Pengambilan data
             while(rs.next()){ //Perulangan
-                layanan = rs.getString("layanan"); // Mengambil data id_admin
-                String harga_layanan_a = rs.getString("harga_layanan");
-                harga_layanan = Integer.parseInt(harga_layanan_a);
+                layanan = rs.getString("layanan");
+                harga_layanan = rs.getInt("harga_layanan");
+                barang = rs.getString("barang");
+                harga_barang = rs.getInt("harga_barang");
             }
             rs.last(); //Penutupan deklarasi
             if(rs.getRow() == 1){
                txtlayanan.setText(layanan);
-               txttagihan.setText(harga_layanan_a);
+               txtharga_layanan.setText(String.valueOf(harga_layanan));
+               txtbarang.setText(barang);
+               txtharga_barang.setText(String.valueOf(harga_barang));
             }else{
                 JOptionPane.showMessageDialog(null, "Error!");
             }
@@ -79,9 +84,9 @@ public class detail_pembayaran extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         txtkode = new javax.swing.JTextField();
         txtlayanan = new javax.swing.JTextField();
-        txtlayanan1 = new javax.swing.JTextField();
+        txtbarang = new javax.swing.JTextField();
         txttagihan = new javax.swing.JTextField();
-        txtharga_layanan1 = new javax.swing.JTextField();
+        txtharga_barang = new javax.swing.JTextField();
         btnbayar = new javax.swing.JButton();
         btnhapus = new javax.swing.JButton();
         back = new javax.swing.JButton();
@@ -148,15 +153,15 @@ public class detail_pembayaran extends javax.swing.JFrame {
             }
         });
 
-        txtlayanan1.addActionListener(new java.awt.event.ActionListener() {
+        txtbarang.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtlayanan1ActionPerformed(evt);
+                txtbarangActionPerformed(evt);
             }
         });
 
-        txtharga_layanan1.addActionListener(new java.awt.event.ActionListener() {
+        txtharga_barang.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtharga_layanan1ActionPerformed(evt);
+                txtharga_barangActionPerformed(evt);
             }
         });
 
@@ -205,9 +210,9 @@ public class detail_pembayaran extends javax.swing.JFrame {
                                 .addGroup(layout.createSequentialGroup()
                                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(18, 18, 18)
-                                    .addComponent(txtlayanan1, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtbarang, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(txtharga_layanan1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(txtharga_barang, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(layout.createSequentialGroup()
                                     .addGap(112, 112, 112)
                                     .addComponent(btnbayar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -242,8 +247,8 @@ public class detail_pembayaran extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtlayanan1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtharga_layanan1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtbarang, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtharga_barang, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txttagihan, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -292,13 +297,13 @@ public class detail_pembayaran extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtharga_layananActionPerformed
 
-    private void txtlayanan1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtlayanan1ActionPerformed
+    private void txtbarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtbarangActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtlayanan1ActionPerformed
+    }//GEN-LAST:event_txtbarangActionPerformed
 
-    private void txtharga_layanan1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtharga_layanan1ActionPerformed
+    private void txtharga_barangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtharga_barangActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtharga_layanan1ActionPerformed
+    }//GEN-LAST:event_txtharga_barangActionPerformed
 
     /**
      * @param args the command line arguments
@@ -346,18 +351,21 @@ public class detail_pembayaran extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JTextField txtbarang;
     private javax.swing.JTextField txtbayar;
+    private javax.swing.JTextField txtharga_barang;
     private javax.swing.JTextField txtharga_layanan;
-    private javax.swing.JTextField txtharga_layanan1;
     private javax.swing.JTextField txtkode;
     private javax.swing.JTextField txtlayanan;
-    private javax.swing.JTextField txtlayanan1;
     private javax.swing.JTextField txttagihan;
     // End of variables declaration//GEN-END:variables
     private void disablefield() {
         txtkode.setEnabled(false);
         txttagihan.setEnabled(false);
         txtlayanan.setEnabled(false);
+        txtbarang.setEnabled(false);
+        txtharga_layanan.setEnabled(false);
+        txtharga_barang.setEnabled(false);
     }
     private void bersih() {
         txtbayar.setText(null);

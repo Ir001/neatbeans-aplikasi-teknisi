@@ -45,9 +45,9 @@
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="jLabel6" min="-2" pref="94" max="-2" attributes="0"/>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="txtlayanan1" min="-2" pref="172" max="-2" attributes="0"/>
+                                  <Component id="txtbarang" min="-2" pref="172" max="-2" attributes="0"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="txtharga_layanan1" min="-2" pref="105" max="-2" attributes="0"/>
+                                  <Component id="txtharga_barang" min="-2" pref="105" max="-2" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="112" pref="112" max="-2" attributes="0"/>
@@ -94,8 +94,8 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel6" alignment="3" min="-2" pref="38" max="-2" attributes="0"/>
-                  <Component id="txtlayanan1" alignment="3" min="-2" pref="31" max="-2" attributes="0"/>
-                  <Component id="txtharga_layanan1" alignment="3" min="-2" pref="31" max="-2" attributes="0"/>
+                  <Component id="txtbarang" alignment="3" min="-2" pref="31" max="-2" attributes="0"/>
+                  <Component id="txtharga_barang" alignment="3" min="-2" pref="31" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -214,16 +214,16 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtlayananActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JTextField" name="txtlayanan1">
+    <Component class="javax.swing.JTextField" name="txtbarang">
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtlayanan1ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtbarangActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="txttagihan">
     </Component>
-    <Component class="javax.swing.JTextField" name="txtharga_layanan1">
+    <Component class="javax.swing.JTextField" name="txtharga_barang">
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtharga_layanan1ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtharga_barangActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnbayar">
