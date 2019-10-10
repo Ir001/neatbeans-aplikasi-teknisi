@@ -47,12 +47,14 @@ public class detail_pembayaran extends javax.swing.JFrame {
                 barang = rs.getString("barang");
                 harga_barang = rs.getInt("harga_barang");
             }
+            int tagihan = harga_barang+harga_layanan;
             rs.last(); //Penutupan deklarasi
             if(rs.getRow() == 1){
                txtlayanan.setText(layanan);
                txtharga_layanan.setText(String.valueOf(harga_layanan));
                txtbarang.setText(barang);
                txtharga_barang.setText(String.valueOf(harga_barang));
+               txttagihan.setText(String.valueOf(tagihan));
             }else{
                 JOptionPane.showMessageDialog(null, "Error!");
             }
@@ -271,6 +273,18 @@ public class detail_pembayaran extends javax.swing.JFrame {
 
     private void btnbayarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnbayarActionPerformed
         // TODO add your handling code here:
+        int bayar = Integer.parseInt(txtbayar.getText());
+        int d_tagihan = Integer.parseInt(txttagihan.getText());
+        int pembayaran = d_tagihan-bayar;
+        if(bayar == d_tagihan){
+            JOptionPane.showMessageDialog(null, "Anda membayar dengan uang pas");
+        }else if(bayar > d_tagihan){
+            //Kembalian
+            JOptionPane.showMessageDialog(null, "Total kembalian:"+pembayaran);
+        }else if(bayar < d_tagihan){
+            //
+             JOptionPane.showMessageDialog(null, "Total kekurangan:"+pembayaran);
+        }
     }//GEN-LAST:event_btnbayarActionPerformed
 
     private void btnhapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnhapusActionPerformed
