@@ -9,10 +9,12 @@ package teknisi;
  *
  * @author user
  */
+import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static teknisi.teknisi.getId_order;
 
 public class detail_pembayaran extends javax.swing.JFrame {
     Connection conn = null;
@@ -26,44 +28,18 @@ public class detail_pembayaran extends javax.swing.JFrame {
         initComponents();
         disablefield();
         String kode = session.getKode();
+        String part = session.get_part();
+        String layanan = session.get_jasa();
+        int harga_part = session.get_harga_part();
+        int harga_jasa = session.get_harga_jasa();
+        int total = harga_part+harga_jasa;
         txtkode.setText(kode);
-        try {
-            conn = koneksi.configDB();
-        }catch (SQLException ex) {
-            Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        String query = "SELECT * FROM orderan JOIN reparasi ON orderan.id_order = reparasi.id_order WHERE orderan.kode = ?";
-        try{ //Eksepsi
-            String layanan = null;
-            String barang = null;
-            int harga_barang = 0;
-            int harga_layanan = 0;
-            pst =  conn.prepareStatement(query); // Eksekusi Query
-            pst.setString(1, kode); 
-            rs = pst.executeQuery(); //Pengambilan data
-            while(rs.next()){ //Perulangan
-                layanan = rs.getString("layanan");
-                harga_layanan = rs.getInt("harga_layanan");
-                barang = rs.getString("barang");
-                harga_barang = rs.getInt("harga_barang");
-            }
-            int tagihan = harga_barang+harga_layanan;
-            rs.last(); //Penutupan deklarasi
-            if(rs.getRow() == 1){
-               txtlayanan.setText(layanan);
-               txtharga_layanan.setText(String.valueOf(harga_layanan));
-               txtbarang.setText(barang);
-               txtharga_barang.setText(String.valueOf(harga_barang));
-               txttagihan.setText(String.valueOf(tagihan));
-            }else{
-                JOptionPane.showMessageDialog(null, "Error!");
-            }
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(null, "Gagal pada database :"+e);
-            System.out.println(e);
-            
-        
-        }
+        txtlayanan.setText(layanan);
+        txtbarang.setText(part);
+        txtharga_barang.setText(String.valueOf(harga_part));
+        txtharga_layanan.setText(String.valueOf(harga_jasa));
+        txttagihan.setText(String.valueOf(total));        
+        btncetak.setVisible(false);
         
     }
 
@@ -93,6 +69,7 @@ public class detail_pembayaran extends javax.swing.JFrame {
         btnhapus = new javax.swing.JButton();
         back = new javax.swing.JButton();
         txtbayar = new javax.swing.JTextField();
+        btncetak = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -188,6 +165,24 @@ public class detail_pembayaran extends javax.swing.JFrame {
             }
         });
 
+        txtbayar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtbayarActionPerformed(evt);
+            }
+        });
+        txtbayar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtbayarKeyTyped(evt);
+            }
+        });
+
+        btncetak.setText("Cetak Nota");
+        btncetak.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btncetakActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -216,18 +211,21 @@ public class detail_pembayaran extends javax.swing.JFrame {
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                     .addComponent(txtharga_barang, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(layout.createSequentialGroup()
-                                    .addGap(112, 112, 112)
-                                    .addComponent(btnbayar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(btnhapus, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(layout.createSequentialGroup()
                                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(18, 18, 18)
                                     .addComponent(txttagihan))
                                 .addGroup(layout.createSequentialGroup()
                                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(18, 18, 18)
-                                    .addComponent(txtbayar, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(txtbayar, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(112, 112, 112)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(btncetak, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(btnbayar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addComponent(btnhapus, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                             .addComponent(back))
                         .addGap(0, 20, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -263,7 +261,9 @@ public class detail_pembayaran extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnbayar, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnhapus, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(65, 65, 65)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btncetak, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(23, 23, 23)
                 .addComponent(back)
                 .addContainerGap())
         );
@@ -274,17 +274,35 @@ public class detail_pembayaran extends javax.swing.JFrame {
     private void btnbayarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnbayarActionPerformed
         // TODO add your handling code here:
         int bayar = Integer.parseInt(txtbayar.getText());
-        int d_tagihan = Integer.parseInt(txttagihan.getText());
+        int d_tagihan = Integer.parseInt(txttagihan.getText());        
         int pembayaran = d_tagihan-bayar;
+        int kembalian = bayar-d_tagihan;
+        session.set_kembalian(kembalian);
+        session.set_bayar(bayar);
+        session.set_total(d_tagihan);
         if(bayar == d_tagihan){
-            JOptionPane.showMessageDialog(null, "Anda membayar dengan uang pas");
+            JOptionPane.showMessageDialog(null, "Sukses malakukan pembayaran dengan uang pas");
         }else if(bayar > d_tagihan){
             //Kembalian
-            JOptionPane.showMessageDialog(null, "Total kembalian:"+pembayaran);
+            JOptionPane.showMessageDialog(null, "Total kembalian:"+kembalian);
         }else if(bayar < d_tagihan){
             //
              JOptionPane.showMessageDialog(null, "Total kekurangan:"+pembayaran);
         }
+        btncetak.setVisible(true);
+             
+            try{
+                String id_admin = session.getId();
+                String id_reparasi = session.getId_reparasi();          
+                Connection con = koneksi.configDB();
+                Statement stt = con.createStatement();
+                String sql = "INSERT INTO pembayaran(id_reparasi, id_admin) VALUES ("+id_reparasi+","+id_admin+")";
+                stt.executeUpdate(sql);
+                JOptionPane.showMessageDialog(null, "Berhasil melakukan pembayaran /:)");
+                stt.close();
+            }catch(Exception e){
+                System.out.println(e.getMessage());        
+            }
     }//GEN-LAST:event_btnbayarActionPerformed
 
     private void btnhapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnhapusActionPerformed
@@ -318,6 +336,25 @@ public class detail_pembayaran extends javax.swing.JFrame {
     private void txtharga_barangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtharga_barangActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtharga_barangActionPerformed
+
+    private void btncetakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btncetakActionPerformed
+        // TODO add your handling code here:
+        nota_pembayaran np = new nota_pembayaran();
+        np.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btncetakActionPerformed
+
+    private void txtbayarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtbayarKeyTyped
+        // TODO add your handling code here:
+       if(Character.isAlphabetic(evt.getKeyChar())){
+            JOptionPane.showMessageDialog(this, "Inputan harus berupa angka");
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtbayarKeyTyped
+
+    private void txtbayarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtbayarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtbayarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -357,6 +394,7 @@ public class detail_pembayaran extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton back;
     private javax.swing.JButton btnbayar;
+    private javax.swing.JButton btncetak;
     private javax.swing.JButton btnhapus;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -383,5 +421,12 @@ public class detail_pembayaran extends javax.swing.JFrame {
     }
     private void bersih() {
         txtbayar.setText(null);
+    }
+    public void FilterAngka(KeyEvent b) {
+        if (Character.isAlphabetic(b.getKeyChar())) {
+            b.consume();
+            //Pesan Dialog Boleh Di Hapus Ini Hanya Sebagai Contoh
+            JOptionPane.showMessageDialog(null, "Inputan Harus Berupa Angka", "Peringatan", JOptionPane.WARNING_MESSAGE);
+        }
     }
 }

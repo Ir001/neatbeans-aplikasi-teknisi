@@ -137,24 +137,39 @@ public class pembayaran extends javax.swing.JFrame {
         // TODO add your handling code here:
         String nama_pelanggan = null;
         String id_order = null;
-        String query = "SELECT * FROM orderan WHERE kode = ?";
+        String id_reparasi = null;
+        String query = "SELECT * FROM orderan JOIN teknisi ON orderan.id_teknisi = teknisi.id_teknisi JOIN reparasi ON orderan.id_order = reparasi.id_order WHERE orderan.kode = ?";
         try{
             pst =  conn.prepareStatement(query);
             pst.setString(1, txtreparasi.getText());
             rs = pst.executeQuery();
             while(rs.next()){
-                nama_pelanggan = rs.getString("nama_pelanggan");
                 id_order = rs.getString("id_order");
+                id_reparasi = rs.getString("id_reparasi");
+                nama_pelanggan = rs.getString("nama_pelanggan");                
+                String nama_teknisi = rs.getString("fullname");
+                String barang = rs.getString("nama_barang");
+                String keluhan = rs.getString("keluhan");
+                String id_jasa = rs.getString("id_jasa");
+                String id_part = rs.getString("id_sparepart");
+                session.set_keluhan(keluhan);
+                session.set_nama_pelanggan(nama_pelanggan);
+                session.set_nama_teknisi(nama_teknisi);
+                session.set_nama_barang(barang);
+                session.setId_reparasi(id_reparasi);
+                session.set_id_jasa(id_jasa);
+                session.set_id_part(id_part);
                 }
             rs.last();
             if(rs.getRow() == 1){
                session.setId_order(id_order);
                session.setKode(txtreparasi.getText());
-               JOptionPane.showMessageDialog(null, "Halo kak, "+nama_pelanggan);
+               JOptionPane.showMessageDialog(null, "Anda akan melakukan transaksi atas nama: "+nama_pelanggan);              
+               get_part();
+               get_jasa();
                detail_pembayaran dp = new detail_pembayaran();
                dp.setVisible(true);
-               this.dispose();
-               
+               this.dispose();               
             }else{
                 JOptionPane.showMessageDialog(null, "Kode reparasi tidak terdaftar!");
                 txtreparasi.setText("");
@@ -162,9 +177,8 @@ public class pembayaran extends javax.swing.JFrame {
         }catch(Exception e){
             JOptionPane.showMessageDialog(null, "Gagal pada database :"+e);
             System.out.println(e);
-            txtreparasi.setText("");
-            
-        
+            txtreparasi.setText("");          
+       
         }
         bersih();
     }//GEN-LAST:event_btncheckActionPerformed
@@ -209,6 +223,48 @@ public class pembayaran extends javax.swing.JFrame {
                 new pembayaran().setVisible(true);
             }
         });
+    }
+    public static void get_part(){
+        String id_part = session.get_id_part();
+        String nama_part;
+        int harga_part;
+        try{
+            Connection con = koneksi.configDB();
+            Statement stt = con.createStatement();
+            String sql = "SELECT * FROM sparepart WHERE id_sparepart = "+id_part;
+            ResultSet res = stt.executeQuery(sql);
+            while(res.next()){                   
+                nama_part = res.getString(2);
+                harga_part = res.getInt(3);  
+                session.set_part(nama_part);
+                session.set_harga_part(harga_part);                
+            }
+            res.close();
+            stt.close();
+        }catch(Exception e){
+            System.out.println(e.getMessage());;
+        }        
+    }
+    public static void get_jasa(){
+        String id_layanan = session.get_id_jasa();
+        String nama_jasa;
+        int harga_jasa;
+        try{
+            Connection con = koneksi.configDB();
+            Statement stt = con.createStatement();
+            String sql = "SELECT * FROM jasa WHERE id_jasa = "+id_layanan;
+            ResultSet res = stt.executeQuery(sql);
+            while(res.next()){                   
+                nama_jasa = res.getString(2);
+                harga_jasa = res.getInt(3);  
+                session.set_jasa(nama_jasa);
+                session.set_harga_jasa(harga_jasa);                
+            }
+            res.close();
+            stt.close();
+        }catch(Exception e){
+            System.out.println(e.getMessage());;
+        }        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
